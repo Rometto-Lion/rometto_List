@@ -256,7 +256,7 @@
         }
         #age-gate {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 1); display: flex; justify-content: center; align-items: center;
+            background: rgba(0, 0, 0, 1); display: none; justify-content: center; align-items: center;
             z-index: 10000; backdrop-filter: blur(20px);
         }
         .age-gate-content { background: #151515; padding: 30px; border: 2px solid #e67e22; border-radius: 10px; text-align: center; max-width: 450px; margin: 20px; }
@@ -1714,6 +1714,7 @@
                 pageContent.style.display = 'flex';
                 body.classList.remove('no-scroll');
                 applyMode(mode === 'on');
+                startMusic();
                 checkBirthday();
             } else {
                 ageGate.style.display = 'flex';
@@ -1740,6 +1741,15 @@
             body.classList.remove('no-scroll');
             applyMode(true);
         }
+
+        // Выбор, сделанный на главной странице (index), читается из общего localStorage.
+        // Если он поменяется в другой вкладке, Rometto-страница подстроится сразу.
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'sfwMode' || e.key === 'ageConfirmed') {
+                const mode = localStorage.getItem('sfwMode');
+                if (mode) applyMode(mode === 'on');
+            }
+        });
 
         function initAgeGate() {
             const confirmBtn = document.getElementById('confirm-age');
@@ -2058,7 +2068,16 @@
             musicStarted = true;
             bgMusic.volume = parseFloat(musicVolume.value);
             musicPlayer.classList.remove('hidden');
-            bgMusic.play().then(() => setPlayingState(true)).catch(() => setPlayingState(false));
+            bgMusic.play().then(() => setPlayingState(true)).catch(() => {
+                setPlayingState(false);
+                const resume = () => {
+                    bgMusic.play().then(() => setPlayingState(true)).catch(() => {});
+                    document.removeEventListener('pointerdown', resume);
+                    document.removeEventListener('keydown', resume);
+                };
+                document.addEventListener('pointerdown', resume);
+                document.addEventListener('keydown', resume);
+            });
         }
 
         musicToggleBtn.addEventListener('click', () => {
@@ -2164,8 +2183,16 @@
 
             initAccordions();
 
-            if (localStorage.getItem('ageConfirmed') === 'true') {
-                startMusic();
+            // Музыка стартует при первом действии пользователя (браузер блокирует автозапуск)
+            ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => {
+                document.addEventListener(ev, () => startMusic(), { once: true });
+            });
+        });
+
+        // Выбор, сделанный на главной странице, применяется сразу, даже если сайт открыт в другой вкладке
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'sfwMode' || e.key === 'ageConfirmed' || e.key === 'birthDate') {
+                checkAge();
             }
         });
 
