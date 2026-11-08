@@ -619,6 +619,56 @@
             border: 1px solid #e67e22; border-radius: 6px; margin-top: 12px;
         }
         #birth-error { color: #e67e22; min-height: 1.6em; margin: 10px 0 0; }
+        /* === РЕЖИМ АДА: мышь заблокирована, адские эффекты === */
+        body.hell-mode * { pointer-events: none !important; }
+        #hell-fx { position: fixed; inset: 0; pointer-events: none; z-index: 9000; display: none; }
+        body.hell-mode #hell-fx { display: block; }
+        #hell-fx::before {
+            content: ""; position: absolute; inset: 0;
+            background: radial-gradient(ellipse at bottom, rgba(255,70,0,0.6), transparent 60%);
+            animation: hellPulse 2.5s ease-in-out infinite alternate;
+        }
+        #hell-fx::after {
+            content: ""; position: absolute; inset: 0; background: rgba(255,40,0,0.35);
+            animation: hellFlash 7s steps(1) infinite;
+        }
+        @keyframes hellPulse { from { opacity: 0.4; } to { opacity: 1; } }
+        @keyframes hellFlash {
+            0%, 91%, 100% { opacity: 0; }
+            92% { opacity: 1; }
+            94% { opacity: 0.15; }
+            96% { opacity: 0.9; }
+        }
+        .hell-ember {
+            position: fixed; bottom: -40px; pointer-events: none; z-index: 9001;
+            animation: emberRise linear forwards;
+        }
+        @keyframes emberRise {
+            to { transform: translate(var(--sway), -110vh) rotate(360deg); opacity: 0; }
+        }
+        .hell-whisper {
+            position: fixed; color: #ff6a3d; font-size: 22px; font-weight: bold; text-align: center;
+            text-shadow: 0 0 10px #f00, 0 0 20px #800; pointer-events: none; z-index: 9002;
+            animation: whisperFade 3.5s ease-in-out forwards;
+        }
+        @keyframes whisperFade {
+            0% { opacity: 0; transform: scale(0.9); }
+            20% { opacity: 1; transform: scale(1); }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        #hell-sigil {
+            position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);
+            width: min(60vmin, 520px); opacity: 0; pointer-events: none; z-index: 9003; display: none;
+        }
+        body.hell-mode #hell-sigil { display: block; animation: sigilFlash 8s steps(1) infinite; }
+        @keyframes sigilFlash {
+            0%, 86%, 100% { opacity: 0; }
+            88% { opacity: 0.8; }
+            90% { opacity: 0.1; }
+            92% { opacity: 0.9; }
+            95% { opacity: 0; }
+        }
     </style>
 </head>
 <body class="no-scroll" data-lang="ru">
@@ -1624,6 +1674,9 @@
             </div>
         </div>
     </div>
+    <div id="hell-fx"></div>
+    <img id="hell-sigil" alt="" src="/assets/LION_HELL.gif"
+         onerror="if(!this.dataset.t){this.dataset.t=1;this.src='/assets/LION_HELL.png';}else if(this.dataset.t==1){this.dataset.t=2;this.src='/assets/LION_HELL.jpg';}">
     <audio id="bg-music" loop src="/assets/Lion_The_Prince_of_Hell_(Remastered).mp3" preload="auto"></audio>
 
     <button id="backToTop" aria-label="Наверх">↑</button>
@@ -1632,6 +1685,8 @@
 
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
+
+        console.log('%cПривет, и зачем ты полез сюда?', 'color:#e67e22; font-size:20px; font-weight:bold; text-shadow:0 0 6px #e67e22;');
 
         // Глобальная переменная
         let particlesEnabled = true;
@@ -2083,6 +2138,57 @@
         });
 
         // Режим ада: вход или отмена
+        // Адские эффекты: искры, шёпоты, блокировка мыши
+        const DEMON_SYMBOLS = ['🔥', '👹', '💀', '👿', '🩸', '☠️'];
+        const WHISPERS = {
+            ru: ['Выхода нет...', 'Ты здесь навсегда', 'Мне нравится твой страх', 'Не нажимай ничего, смертный', 'Рометто наблюдает за тобой',
+                 'Зачем ты кликал на имя? Тебя подсказали?', 'Пожалел, что зашёл, да?', 'Не жми, это щекотно', 'Лапки устали тебя ждать',
+                 'Ты пришёл за лором, а получишь ад', 'Я вижу, как ты пытаешься нажать. Не надо.'],
+            en: ['There is no exit...', 'You are here forever', 'I enjoy your fear', 'Do not click anything, mortal', 'Rometto is watching you',
+                 'Why did you click the name? Were you told to?', 'Regretting coming here yet?', 'Stop poking, it tickles', 'My paws are tired of waiting for you',
+                 'You came for lore, you get hell', "I see you trying to click. Don't."]
+        };
+
+        function spawnEmber() {
+            const e = document.createElement('div');
+            e.className = 'hell-ember';
+            e.textContent = DEMON_SYMBOLS[Math.floor(Math.random() * DEMON_SYMBOLS.length)];
+            e.style.left = (Math.random() * 100) + 'vw';
+            e.style.fontSize = (14 + Math.random() * 22) + 'px';
+            e.style.setProperty('--sway', ((Math.random() * 200) - 100) + 'px');
+            e.style.animationDuration = (4 + Math.random() * 4).toFixed(2) + 's';
+            document.body.appendChild(e);
+            setTimeout(() => e.remove(), 9000);
+        }
+
+        function spawnWhisper() {
+            const list = document.body.getAttribute('data-lang') === 'en' ? WHISPERS.en : WHISPERS.ru;
+            const w = document.createElement('div');
+            w.className = 'hell-whisper';
+            w.textContent = list[Math.floor(Math.random() * list.length)];
+            w.style.top = (20 + Math.random() * 60) + 'vh';
+            w.style.left = (10 + Math.random() * 60) + 'vw';
+            document.body.appendChild(w);
+            setTimeout(() => w.remove(), 3500);
+        }
+
+        function startHellFx() {
+            setInterval(spawnEmber, 350);
+            setInterval(spawnWhisper, 4000);
+            document.title = document.body.getAttribute('data-lang') === 'en' ? 'You are in HELL' : 'Вы в АДУ';
+        }
+
+        function blockMouse() {
+            ['click', 'mousedown', 'mouseup', 'pointerdown', 'touchstart', 'touchend', 'contextmenu'].forEach((evt) => {
+                document.addEventListener(evt, (e) => {
+                    if (document.body.classList.contains('hell-mode')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                }, true);
+            });
+        }
+
         function startHell() {
             const rnd = (min, max) => Math.random() * (max - min) + min;
             const chaos = (el, amp) => {
@@ -2100,6 +2206,8 @@
                 .forEach((el) => { if (!el.closest('#sfw-toggle')) chaos(el, 70); });
             body.classList.add('hell-mode');
             loadTrack('hell');
+            startHellFx();
+            blockMouse();
         }
 
         document.getElementById('hell-enter').addEventListener('click', () => {
