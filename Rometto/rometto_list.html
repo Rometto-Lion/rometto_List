@@ -647,7 +647,8 @@
             to { transform: translate(var(--sway), -110vh) rotate(360deg); opacity: 0; }
         }
         .hell-whisper {
-            position: fixed; color: #ff6a3d; font-size: 22px; font-weight: bold; text-align: center;
+            position: fixed; color: #ff6a3d; font-size: clamp(40px, 8vw, 120px); font-weight: 900; text-align: center;
+            line-height: 1.1; max-width: 90vw;
             text-shadow: 0 0 10px #f00, 0 0 20px #800; pointer-events: none; z-index: 9002;
             animation: whisperFade 3.5s ease-in-out forwards;
         }
@@ -2190,7 +2191,7 @@
             w.className = 'hell-whisper';
             w.textContent = list[Math.floor(Math.random() * list.length)];
             w.style.top = (20 + Math.random() * 60) + 'vh';
-            w.style.left = (10 + Math.random() * 60) + 'vw';
+            w.style.left = (5 + Math.random() * 40) + 'vw';
             document.body.appendChild(w);
             setTimeout(() => w.remove(), 3500);
         }
