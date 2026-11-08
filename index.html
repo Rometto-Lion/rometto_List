@@ -29,7 +29,7 @@
 
         #bg-default {
             background: linear-gradient(135deg, #111827, #1f2937, #374151);
-            opacity: 1; 
+            opacity: 1;
             z-index: -2;
         }
 
@@ -41,10 +41,10 @@
         .glass-card {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
                         box-shadow 0.5s ease,
                         background 0.5s ease;
-            transform: translateZ(0); /* GPU ускорение */
+            transform: translateZ(0);
         }
 
         .glass-card:hover {
@@ -65,7 +65,7 @@
         body[data-active="budd"] #bg-budd { opacity: 1; }
         body[data-active="abi"] #bg-abi { opacity: 1; }
 
-        /* Свечение главного текста - УПРОЩЕННОЕ (2 слоя вместо 5) */
+        /* Свечение главного текста */
         body[data-active="rometto"] #main-title,
         body[data-active="rometto"] #main-desc {
             color: #ffedd5;
@@ -90,25 +90,62 @@
             text-shadow: 0 0 8px rgba(255,255,255,0);
             transition: text-shadow 0.4s ease-out, color 0.4s ease-out;
         }
-        
-        .glass-card[data-char="rometto"]:hover .card-title { 
-            color: #fdba74; 
+
+        .glass-card[data-char="rometto"]:hover .card-title {
+            color: #fdba74;
             text-shadow: 0 0 15px rgba(234, 88, 12, 0.8);
         }
-        
-        .glass-card[data-char="budd"]:hover .card-title { 
-            color: #bef264; 
+
+        .glass-card[data-char="budd"]:hover .card-title {
+            color: #bef264;
             text-shadow: 0 0 15px rgba(163, 230, 53, 0.8);
         }
-        
-        .glass-card[data-char="abi"]:hover .card-title { 
-            color: #7dd3fc; 
+
+        .glass-card[data-char="abi"]:hover .card-title {
+            color: #7dd3fc;
             text-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
         }
 
         /* Управление языками */
         body[data-lang="ru"] .lang-en { display: none; }
         body[data-lang="en"] .lang-ru { display: none; }
+
+        /* ===== SFW / 18+ ===== */
+        #sfw-toggle {
+            position: absolute; top: 20px; right: 135px; z-index: 50;
+            background: rgba(15,15,15,0.6); border: 1px solid rgba(255,255,255,0.25); color: #fff;
+            padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer;
+        }
+        #sfw-toggle:hover { background: rgba(255,255,255,0.2); }
+
+        .overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: none;
+            justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
+        }
+        #age-gate { z-index: 40000; }
+        #adult-warning { z-index: 40001; }
+        #birth-modal { z-index: 40002; }
+        #birthday-popup { z-index: 40003; }
+
+        .overlay .box {
+            background: #151515; border: 2px solid #e67e22; border-radius: 10px;
+            padding: 28px; max-width: 460px; width: 100%; text-align: center; color: #d2b48c; line-height: 1.6;
+        }
+        .overlay h2 { color: #fff; margin: 0 0 12px; font-size: 22px; }
+        .overlay .row { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+        .overlay button {
+            padding: 10px 18px; border-radius: 20px; border: 1px solid #e67e22; background: transparent;
+            color: #e67e22; font-weight: bold; cursor: pointer; font-size: 14px;
+        }
+        .overlay button:hover { background: rgba(230,126,34,0.2); }
+        .overlay button.primary { background: #e67e22; color: #fff; }
+        .overlay button.primary:hover { background: #d35400; }
+        .overlay .row-inline { flex-direction: row; justify-content: center; flex-wrap: wrap; }
+        #birth-input {
+            padding: 10px; font-size: 16px; background: #111; color: #d2b48c;
+            border: 1px solid #e67e22; border-radius: 6px; margin-top: 12px;
+        }
+        #birth-error { color: #e67e22; min-height: 1.6em; margin: 10px 0 0; }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative" data-lang="ru">
@@ -118,8 +155,11 @@
     <div id="bg-budd" class="bg-layer"></div>
     <div id="bg-abi" class="bg-layer"></div>
 
+    <!-- Переключатель SFW / 18+ -->
+    <button id="sfw-toggle" type="button" title="SFW / 18+">🛡 SFW</button>
+
     <!-- Кнопка переключения языка -->
-    <button id="langToggle" class="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 glass-card px-4 py-2 rounded-xl text-white font-bold text-sm tracking-widest cursor-pointer hover:bg-white/20 transition-all border border-white/20">
+    <button id="langToggle" class="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 bg-white/5 px-4 py-2 rounded-xl text-white font-bold text-sm tracking-widest cursor-pointer hover:bg-white/20 transition-all border border-white/20">
         RU <span class="opacity-50 font-normal">| EN</span>
     </button>
 
@@ -137,15 +177,12 @@
 
     <!-- Сетка карточек -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-10 w-full max-w-6xl z-10">
-        
+
         <!-- Карточка: Rometto -->
         <a href="Rometto/rometto_list" class="glass-card rounded-2xl overflow-hidden cursor-pointer group relative flex flex-col aspect-[3/4] md:aspect-square" data-target="bg-rometto" data-char="rometto">
-            <!-- Картинка на весь фон карточки с оптимизированным масштабированием -->
             <img src="Rometto_icon.png" alt="Rometto" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 z-0" style="will-change: transform;">
-            <!-- Плавный темный градиент снизу для читаемости текста -->
             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10"></div>
-            
-            <!-- Текстовый блок (всегда прижат к низу поверх картинки) -->
+
             <div class="relative z-20 p-6 flex-grow flex flex-col justify-end">
                 <h2 class="card-title text-3xl font-bold text-white mb-2">Rometto</h2>
                 <p class="text-gray-200 text-sm">
@@ -159,7 +196,7 @@
         <a href="budd_list" class="glass-card rounded-2xl overflow-hidden cursor-pointer group relative flex flex-col aspect-[3/4] md:aspect-square" data-target="bg-budd" data-char="budd">
             <img src="assets/Budd.png" alt="Budd" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 z-0" style="will-change: transform;">
             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10"></div>
-            
+
             <div class="relative z-20 p-6 flex-grow flex flex-col justify-end">
                 <h2 class="card-title text-3xl font-bold text-white mb-2">Budd</h2>
                 <p class="text-gray-200 text-sm">
@@ -173,7 +210,7 @@
         <a href="Abi_list" class="glass-card rounded-2xl overflow-hidden cursor-pointer group relative flex flex-col aspect-[3/4] md:aspect-square" data-target="bg-abi" data-char="abi">
             <img src="assets/Abioy_icon.png" alt="Abi" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 z-0" style="will-change: transform;">
             <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10"></div>
-            
+
             <div class="relative z-20 p-6 flex-grow flex flex-col justify-end">
                 <h2 class="card-title text-3xl font-bold text-white mb-2">Abioy (Abi)</h2>
                 <p class="text-gray-200 text-sm">
@@ -183,6 +220,101 @@
             </div>
         </a>
 
+    </div>
+
+    <!-- Первый вход: выбор версии -->
+    <div id="age-gate" class="overlay">
+        <div class="box">
+            <h2>
+                <span class="lang-ru">ВЫБЕРИТЕ ВЕРСИЮ</span>
+                <span class="lang-en">CHOOSE A VERSION</span>
+            </h2>
+            <p>
+                <span class="lang-ru">Полная версия сайта содержит NSFW-материалы и доступна только для 18+. Версия SFW открывается без подтверждения возраста.</span>
+                <span class="lang-en">The full version contains NSFW material and is for 18+ only. The SFW version opens without age confirmation.</span>
+            </p>
+            <div class="row">
+                <button type="button" id="gate-sfw" class="primary">
+                    <span class="lang-ru">SFW-ВЕРСИЯ</span>
+                    <span class="lang-en">SFW VERSION</span>
+                </button>
+                <button type="button" id="gate-adult">
+                    <span class="lang-ru">МНЕ ЕСТЬ 18 (ПОЛНАЯ ВЕРСИЯ)</span>
+                    <span class="lang-en">I AM 18+ (FULL VERSION)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Предупреждение при переходе в 18+ -->
+    <div id="adult-warning" class="overlay">
+        <div class="box">
+            <h2>
+                <span class="lang-ru">ВНИМАНИЕ: 18+</span>
+                <span class="lang-en">WARNING: 18+</span>
+            </h2>
+            <p>
+                <span class="lang-ru">Вы включаете полную версию сайта. Она содержит NSFW-материалы. Подтвердите, что вам есть 18 лет.</span>
+                <span class="lang-en">You are switching to the full version. It contains NSFW material. Confirm that you are 18 or older.</span>
+            </p>
+            <div class="row row-inline">
+                <button type="button" id="adult-confirm" class="primary">
+                    <span class="lang-ru">ДА, МНЕ ЕСТЬ 18</span>
+                    <span class="lang-en">YES, I AM 18+</span>
+                </button>
+                <button type="button" id="adult-cancel">
+                    <span class="lang-ru">ОТМЕНА</span>
+                    <span class="lang-en">CANCEL</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Дата рождения -->
+    <div id="birth-modal" class="overlay">
+        <div class="box">
+            <h2>
+                <span class="lang-ru">ДАТА РОЖДЕНИЯ</span>
+                <span class="lang-en">DATE OF BIRTH</span>
+            </h2>
+            <p>
+                <span class="lang-ru">Укажите дату и год рождения, чтобы подтвердить 18+. Данные хранятся только в вашем браузере.</span>
+                <span class="lang-en">Enter your date of birth to confirm 18+. The data is stored only in your browser.</span>
+            </p>
+            <input type="date" id="birth-input">
+            <p id="birth-error"></p>
+            <div class="row row-inline">
+                <button type="button" id="birth-ok" class="primary">
+                    <span class="lang-ru">ПОДТВЕРДИТЬ</span>
+                    <span class="lang-en">CONFIRM</span>
+                </button>
+                <button type="button" id="birth-cancel">
+                    <span class="lang-ru">ОТМЕНА</span>
+                    <span class="lang-en">CANCEL</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Поздравление с днём рождения -->
+    <div id="birthday-popup" class="overlay">
+        <div class="box">
+            <img src="assets/birthday_lion.png" alt="" onerror="this.remove()" style="max-width:100%; border-radius:8px; margin-bottom:12px;">
+            <h2 style="color:#e67e22;">
+                <span class="lang-ru">🎂 С ДНЁМ РОЖДЕНИЯ!</span>
+                <span class="lang-en">🎂 HAPPY BIRTHDAY!</span>
+            </h2>
+            <p>
+                <span class="lang-ru">Желаю здоровья, лап и хорошего настроения. Спасибо, что заглянули в этот день!</span>
+                <span class="lang-en">Wishing you health, paws and a good mood. Thanks for stopping by on this special day!</span>
+            </p>
+            <div class="row row-inline">
+                <button type="button" id="birthday-close" class="primary">
+                    <span class="lang-ru">СПАСИБО</span>
+                    <span class="lang-en">THANKS</span>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- JavaScript -->
@@ -203,13 +335,12 @@
                 });
 
                 card.addEventListener('mouseleave', () => {
-                    /* Плавное возвращение вместо мгновенного drop */
                     transitionTimeout = setTimeout(() => {
                         activeChar = null;
                         body.removeAttribute('data-active');
                     }, 50);
                 });
-                
+
                 card.addEventListener('touchstart', () => {
                     clearTimeout(transitionTimeout);
                     activeChar = charName;
@@ -220,7 +351,7 @@
                     transitionTimeout = setTimeout(() => {
                         activeChar = null;
                         body.removeAttribute('data-active');
-                    }, 300); /* На мобильных чуть дольше для лучшего UX */
+                    }, 300);
                 }, {passive: true});
             });
 
@@ -240,12 +371,135 @@
                 }
             };
 
-            // Инициализируем язык при загрузке
             setLang(currentLang);
 
             langToggle.addEventListener('click', () => {
                 currentLang = currentLang === 'ru' ? 'en' : 'ru';
                 setLang(currentLang);
+            });
+        });
+    </script>
+
+    <script>
+        // ==================== SFW / 18+ / ДАТА РОЖДЕНИЯ ====================
+        // Ключи общие с Rometto-страницей: sfwMode, ageConfirmed, birthDate, birthdayShown
+        document.addEventListener('DOMContentLoaded', () => {
+            const $ = (id) => document.getElementById(id);
+            const body = document.body;
+            const T = (ru, en) => body.getAttribute('data-lang') === 'en' ? en : ru;
+            const stored = localStorage.getItem('sfwMode');
+            const confirmed = () => localStorage.getItem('ageConfirmed') === 'true';
+
+            function setToggleLabel() {
+                $('sfw-toggle').textContent = body.classList.contains('sfw') ? '🛡 SFW' : '🔞 18+';
+            }
+
+            function applyMode(sfw) {
+                body.classList.toggle('sfw', sfw);
+                localStorage.setItem('sfwMode', sfw ? 'on' : 'off');
+                setToggleLabel();
+            }
+
+            function askBirth(onDone) {
+                if (localStorage.getItem('birthDate')) { onDone(); return; }
+                const modal = $('birth-modal');
+                const input = $('birth-input');
+                const err = $('birth-error');
+                const ok = $('birth-ok');
+                const cancel = $('birth-cancel');
+                input.value = '';
+                err.textContent = '';
+                modal.style.display = 'flex';
+
+                const close = () => {
+                    modal.style.display = 'none';
+                    ok.removeEventListener('click', submit);
+                    cancel.removeEventListener('click', close);
+                };
+                const submit = () => {
+                    const [yy, mm, dd] = (input.value || '').split('-').map(Number);
+                    if (!yy || !mm || !dd) {
+                        err.textContent = T('Укажите дату рождения.', 'Please enter your date of birth.');
+                        return;
+                    }
+                    const birth = new Date(yy, mm - 1, dd);
+                    const t = new Date();
+                    let age = t.getFullYear() - birth.getFullYear();
+                    if (t.getMonth() < birth.getMonth() || (t.getMonth() === birth.getMonth() && t.getDate() < birth.getDate())) age--;
+                    if (age < 18) {
+                        err.textContent = T('Полная версия только для 18+.', 'The full version is for 18+ only.');
+                        return;
+                    }
+                    localStorage.setItem('birthDate', input.value);
+                    close();
+                    onDone();
+                };
+                ok.addEventListener('click', submit);
+                cancel.addEventListener('click', close);
+            }
+
+            function checkBirthday() {
+                const bd = localStorage.getItem('birthDate');
+                if (!bd) return;
+                const [, mm, dd] = bd.split('-').map(Number);
+                const t = new Date();
+                if (t.getMonth() + 1 !== mm || t.getDate() !== dd) return;
+                if (localStorage.getItem('birthdayShown') === String(t.getFullYear())) return;
+                localStorage.setItem('birthdayShown', String(t.getFullYear()));
+                $('birthday-popup').style.display = 'flex';
+            }
+
+            // Начальное состояние: по умолчанию SFW
+            const startSfw = stored ? stored === 'on' : !confirmed();
+            body.classList.toggle('sfw', startSfw);
+            setToggleLabel();
+
+            if (!stored && !confirmed()) {
+                $('age-gate').style.display = 'flex';
+            } else {
+                checkBirthday();
+            }
+
+            // Экран первого входа
+            $('gate-sfw').addEventListener('click', () => {
+                applyMode(true);
+                $('age-gate').style.display = 'none';
+            });
+            $('gate-adult').addEventListener('click', () => {
+                askBirth(() => {
+                    localStorage.setItem('ageConfirmed', 'true');
+                    applyMode(false);
+                    $('age-gate').style.display = 'none';
+                    checkBirthday();
+                });
+            });
+
+            // Переключатель
+            $('sfw-toggle').addEventListener('click', () => {
+                if (body.classList.contains('sfw')) {
+                    if (confirmed()) {
+                        askBirth(() => { applyMode(false); checkBirthday(); });
+                    } else {
+                        $('adult-warning').style.display = 'flex';
+                    }
+                } else {
+                    applyMode(true);
+                }
+            });
+            $('adult-cancel').addEventListener('click', () => {
+                $('adult-warning').style.display = 'none';
+            });
+            $('adult-confirm').addEventListener('click', () => {
+                $('adult-warning').style.display = 'none';
+                askBirth(() => {
+                    localStorage.setItem('ageConfirmed', 'true');
+                    applyMode(false);
+                    checkBirthday();
+                });
+            });
+
+            $('birthday-close').addEventListener('click', () => {
+                $('birthday-popup').style.display = 'none';
             });
         });
     </script>
