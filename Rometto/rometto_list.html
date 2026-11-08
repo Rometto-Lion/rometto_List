@@ -134,6 +134,8 @@
         .appearance-desc h3 { margin: 0 0 10px 0; color: #e67e22; font-size: 18px; }
         .appearance-desc p { margin: 0 0 10px 0; font-style: italic; font-size: 15px; }
         .appearance-desc strong { color: #e67e22; font-style: normal; }
+        .appearance-list { margin: 10px 0 0; padding-left: 22px; }
+        .appearance-list li { margin-bottom: 8px; font-size: 15px; font-style: normal; }
         .contacts-block { display: flex; gap: 20px; margin-top: 10px; justify-content: center; flex-wrap: wrap; }
         .contact-link { color: #d2b48c; text-decoration: none; font-weight: bold; display: flex; align-items: center; transition: 0.3s; border-bottom: 1px solid transparent; }
         .contact-link:hover { color: #e67e22; border-bottom-color: #e67e22; }
@@ -777,7 +779,6 @@
         </div>
 
         <div class="refmap-wrapper" id="refmap-wrapper">
-            <!-- Изображение теперь не имеет жестко заданного src в HTML, он задается скриптом -->
             <img alt="Rometto" loading="lazy" id="refmap-img">
             <div class="refmap-box" id="box-tail"></div>
             <div class="refmap-box" id="box-paws"></div>
@@ -814,10 +815,17 @@
                 <span class="lang-ru">Описание внешности и особенностей</span>
                 <span class="lang-en">Appearance & Features Description</span>
             </h3>
-            <p>
-                <span class="lang-ru">Появится позже, так как у <span class="en-text">ROMETTO</span> лапки... Пока вы можете увидеть всё на референсе выше.</span>
-                <span class="lang-en">Coming soon, as <span class="en-text">ROMETTO</span> has paws... For now, you can check out the reference sheet above.</span>
-            </p>
+            <p><span class="lang-ru">Базовая характеристика: Рометто — лев-полудемон, самец.</span><span class="lang-en">Basic profile: Rometto is a lion-half-demon, male.</span></p>
+            <ul class="appearance-list">
+                    <li><strong><span class="lang-ru">Габариты:</span><span class="lang-en">Dimensions:</span></strong> <span class="lang-ru">Исполинские размеры Рометто внушают первобытный трепет. Возвышаясь в холке на невероятные 417 см, он заставляет взрослого человека казаться крошечным — макушка человека едва достает этому гиганту до колена.</span><span class="lang-en">Rometto's sheer size inspires primal awe. Towering at an incredible 417 cm (13.7 ft) at the shoulder, he makes an adult human look tiny—the top of a man's head barely reaches this giant's knee.</span></li>
+                    <li><strong><span class="lang-ru">Окрас шерсти:</span><span class="lang-en">Coat color:</span></strong> <span class="lang-ru">Его густая, лоснящаяся шерсть отливает насыщенным тёмно-коричневым оттенком, создавая выразительный контраст со светло-кремовыми подпалинами на нижней части морды, мощной груди, животе и внутренней стороне бедер. Пальцы на его массивных лапах также отмечены этим светлым бежевым тоном.</span><span class="lang-en">His thick, sleek coat gleams in a rich dark-brown hue, creating a striking contrast with the light creamy-beige markings on his lower muzzle, chest, belly, and inner thighs. The toes on his massive paws also share this light beige tone.</span></li>
+                    <li><strong><span class="lang-ru">Грива:</span><span class="lang-en">Mane:</span></strong> <span class="lang-ru">Гордость льва — невероятно густая, объёмная грива цвета глубокой ночи. Она величественно обрамляет голову, тяжелыми прядями спадает на грудь и перетекает в жесткий, длинный гребень, тянущийся вдоль всего позвоночника до основания хвоста, увенчанного такой же угольно-чёрной кисточкой.</span><span class="lang-en">The lion's pride is an incredibly thick, voluminous mane the color of the deep night. It majestically frames his head, falls in heavy locks onto his chest, and merges into a harsh, long crest running along his entire spine to the base of his tail, which is crowned by a pitch-black tuft.</span></li>
+                    <li><strong><span class="lang-ru">Морда и глаза:</span><span class="lang-en">Muzzle and eyes:</span></strong> <span class="lang-ru">Морда гиганта выразительна и сурова. Пронзительные, ярко-синие глаза сияют на фоне тёмных пятен-масок, придавая его взгляду демоническую глубину и тяжесть. Небольшая тёмная бородка на подбородке завершает хищный профиль.</span><span class="lang-en">The giant's muzzle is expressive and stern. His piercing, bright blue eyes shine against dark, mask-like patches, giving his gaze a demonic depth and weight. A small dark beard on his chin completes the predatory profile.</span></li>
+                    <li><strong><span class="lang-ru">Пасть и зубы:</span><span class="lang-en">Mouth and teeth:</span></strong> <span class="lang-ru">За приоткрытыми губами скрываются сокрушительные, мощные челюсти с ярко выраженными, смертоносными клыками, способными дробить кости подобно хрупкому стеклу.</span><span class="lang-en">Behind his parted lips lie crushing, powerful jaws with clearly pronounced, deadly fangs capable of shattering bones like fragile glass.</span></li>
+                    <li><strong><span class="lang-ru">Лапы:</span><span class="lang-en">Paws:</span></strong> <span class="lang-ru">Опорой этому титану служат невероятно массивные лапы с плотными, тёмными анатомическими подушечками. Когти, когда они выпущены, подобны кривым изогнутым кинжалам, готовым разорвать любую преграду.</span><span class="lang-en">This titan is supported by incredibly massive paws with dense, dark anatomical pads. His claws, when unsheathed, are like curved daggers ready to tear through any obstacle.</span></li>
+                    <li class="nsfw-only"><strong><span class="lang-ru">Репродуктивная система:</span><span class="lang-en">Reproductive system:</span></strong> <span class="lang-ru">Анатомия скрытого в препуциальном мешке органа под стать его титаническим размерам. Тёмный пенис имеет характерную изогнутую форму, плавно сужающуюся к кончику, и покрыт плотными кошачьими шипами, усиленными демонической структурой. Тяжелая мошонка, выделяющаяся контрастным светлым кремово-бежевым оттенком с редкими тёмными волосками, скрывает в себе яички размером с крупное помело.</span><span class="lang-en">His anatomy matches his titanic proportions. The dark-colored penis has a distinct curved shape, tapering smoothly towards the tip, and is covered with dense feline barbs enhanced by his demonic nature. The heavy scrotum, standing out in a contrasting light creamy-beige shade with sparse dark hairs, holds testicles the size of large pomelos.</span></li>
+            </ul>
+            <div class="nsfw-only" style="margin-top:12px;"><span class="lang-ru">Подробные анатомические данные и размеры — в разделе «4. Репродуктивная система» (только в 18+ версии).</span><span class="lang-en">Detailed anatomical data and measurements are in section "4. Reproductive System" (18+ version only).</span></div>
         </div>
 
         <!-- 1. Общая биология -->
