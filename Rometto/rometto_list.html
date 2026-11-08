@@ -669,6 +669,21 @@
             92% { opacity: 0.9; }
             95% { opacity: 0; }
         }
+        .hell-seen {
+            position: fixed; left: 50%; top: 45%; transform: translate(-50%, -50%);
+            font-size: clamp(28px, 6vw, 64px); font-weight: 900; letter-spacing: 4px; white-space: nowrap;
+            color: #ff1a1a; text-shadow: 0 0 12px #ff0000, 0 0 30px #8b0000, 0 0 60px #ff0000;
+            pointer-events: none; z-index: 9004; opacity: 0;
+            animation: seenFlash 3.2s ease-in-out forwards;
+        }
+        @keyframes seenFlash {
+            0%   { opacity: 0; filter: blur(6px); }
+            15%  { opacity: 1; filter: blur(0); }
+            25%  { opacity: 0.2; }
+            35%  { opacity: 1; }
+            80%  { opacity: 1; }
+            100% { opacity: 0; filter: blur(4px); }
+        }
     </style>
 </head>
 <body class="no-scroll" data-lang="ru">
@@ -2171,6 +2186,25 @@
             document.body.appendChild(w);
             setTimeout(() => w.remove(), 3500);
         }
+
+        function spawnSeen() {
+            const w = document.createElement('div');
+            w.className = 'hell-seen';
+            w.textContent = document.body.getAttribute('data-lang') === 'en' ? 'I SEE EVERYTHING' : 'Я ВСЁ ВИЖУ';
+            document.body.appendChild(w);
+            setTimeout(() => w.remove(), 3300);
+        }
+
+        // Открытие панели разработчика по горячим клавишам (F12, Ctrl/Cmd+Shift+I/J/C, Cmd+Option+I/J/C)
+        const isDevKey = (e) => {
+            const k = (e.key || '').toLowerCase();
+            const c = e.code || '';
+            return e.key === 'F12' || c === 'F12' ||
+                ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i', 'j', 'c'].includes(k)) ||
+                (e.metaKey && e.altKey && ['i', 'j', 'c'].includes(k));
+        };
+        window.addEventListener('keydown', (e) => { if (isDevKey(e)) onDevtoolsOpen(); }, true);
+        window.addEventListener('keyup', (e) => { if (isDevKey(e)) onDevtoolsOpen(); }, true);
 
         function startHellFx() {
             setInterval(spawnEmber, 350);
