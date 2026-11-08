@@ -2254,6 +2254,15 @@
 
         document.getElementById('hell-enter').addEventListener('click', () => {
             document.getElementById('hell-modal').style.display = 'none';
+            // Полноэкранный режим, как по F11 (клик по кнопке даёт разрешение браузера)
+            const el = document.documentElement;
+            const request = el.requestFullscreen || el.webkitRequestFullscreen;
+            if (request) {
+                try {
+                    const p = request.call(el);
+                    if (p && p.catch) p.catch(() => {});
+                } catch (e) {}
+            }
             startHell();
         });
         document.getElementById('hell-cancel').addEventListener('click', () => {
