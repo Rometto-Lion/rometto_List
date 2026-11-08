@@ -659,8 +659,9 @@
             100% { opacity: 0; }
         }
         #hell-sigil {
-            position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);
-            width: min(60vmin, 520px); opacity: 0; pointer-events: none; z-index: 9003; display: none;
+            position: fixed; inset: 0; width: 100%; height: 100%; object-fit: fill;
+            background: rgba(110, 0, 0, 0.7);
+            opacity: 0; pointer-events: none; z-index: 9003; display: none;
         }
         body.hell-mode #hell-sigil { display: block; animation: sigilFlash 8s steps(1) infinite; }
         @keyframes sigilFlash {
@@ -1699,8 +1700,8 @@
     <img id="hell-bg" alt="" src="/assets/ROMETT_HELL.png"
          onerror="if(!this.dataset.t){this.dataset.t=1;this.src='/assets/ROMETT_HELL.gif';}else if(this.dataset.t==1){this.dataset.t=2;this.src='/assets/ROMETT_HELL.jpg';}">
     <div id="hell-fx"></div>
-    <img id="hell-sigil" alt="" src="/assets/LION_HELL.gif"
-         onerror="if(!this.dataset.t){this.dataset.t=1;this.src='/assets/LION_HELL.png';}else if(this.dataset.t==1){this.dataset.t=2;this.src='/assets/LION_HELL.jpg';}">
+    <img id="hell-sigil" alt="" src="/assets/LION_HELL.png"
+         onerror="if(!this.dataset.t){this.dataset.t=1;this.src='/assets/LION_HELL.gif';}else if(this.dataset.t==1){this.dataset.t=2;this.src='/assets/LION_HELL.jpg';}">
     <audio id="bg-music" loop src="/assets/Lion_The_Prince_of_Hell_(Remastered).mp3" preload="auto"></audio>
 
     <button id="backToTop" aria-label="Наверх">↑</button>
