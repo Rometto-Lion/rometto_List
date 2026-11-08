@@ -503,6 +503,14 @@
             animation: musicPulse 1.8s ease-in-out infinite;
         }
 
+        #music-switch-btn {
+            width: 40px; height: 40px; border-radius: 50%; border: 2px solid #e67e22;
+            background: rgba(15,15,15,0.92); color: #e67e22; font-size: 16px; line-height: 1;
+            cursor: pointer; pointer-events: all; flex-shrink: 0;
+        }
+        #music-switch-btn:hover { background: #e67e22; color: #000; }
+        body.hell-mode #music-switch-btn { display: none; }
+
         #backToTop {
             position: fixed;
             bottom: 30px;
@@ -1522,6 +1530,7 @@
             <span class="music-vol-icon">🔈</span>
         </div>
         <button id="music-toggle-btn" title="Пауза / Воспроизведение">▶</button>
+        <button id="music-switch-btn" type="button" title="Сменить трек">⇄</button>
     </div>
     <!-- Предупреждение при переходе в 18+ -->
     <div id="adult-warning">
@@ -2090,6 +2099,7 @@
             document.querySelectorAll('#page-content :is(h1, h2, h3, p, span, td, th, li, a, label)')
                 .forEach((el) => { if (!el.closest('#sfw-toggle')) chaos(el, 70); });
             body.classList.add('hell-mode');
+            loadTrack('hell');
         }
 
         document.getElementById('hell-enter').addEventListener('click', () => {
@@ -2166,6 +2176,24 @@
                 bgMusic.pause();
                 setPlayingState(false);
             }
+        });
+
+        // Треки: обычный, второй и режим ада (все в /assets/)
+        const TRACKS = {
+            main: '/assets/Lion_The_Prince_of_Hell_(Remastered).mp3',
+            alt: encodeURI('/assets/We are one - Romb Blog.mp3'),
+            hell: '/assets/Lion_The_Prince_of_Hell_Remastered_9x_помехи_кому_это_надо.mp3'
+        };
+        let currentTrack = 'main';
+
+        function loadTrack(key) {
+            currentTrack = key;
+            bgMusic.src = TRACKS[key];
+            bgMusic.play().then(() => setPlayingState(true)).catch(() => setPlayingState(false));
+        }
+
+        document.getElementById('music-switch-btn').addEventListener('click', () => {
+            loadTrack(currentTrack === 'main' ? 'alt' : 'main');
         });
 
         musicVolume.addEventListener('input', () => {
