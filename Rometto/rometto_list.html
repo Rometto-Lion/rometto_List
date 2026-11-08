@@ -329,7 +329,37 @@
         .toc { animation: glow 4s ease-in-out infinite; }
 
         /* Режим ада */
-        .hell-mode { filter: brightness(1.55) contrast(1.35) hue-rotate(355deg) saturate(1.4) !important; animation: hellShake 0.6s infinite alternate linear; }
+        .hell-mode { filter: sepia(1) saturate(6) hue-rotate(-35deg) brightness(0.9) contrast(1.3) !important; }
+        /* Блоки и текст хаотично летают; значения случайные, задаёт скрипт при входе */
+        body.hell-mode #page-content > *:not(canvas):not(#lightbox):not(.toggle-particles):not(#sfw-toggle),
+        body.hell-mode #page-content :is(h1, h2, h3, p, span, td, th, li, a, label) {
+            animation: hellDrift 4s ease-in-out infinite alternate;
+        }
+        body.hell-mode #page-content span,
+        body.hell-mode #page-content a { display: inline-block; }
+        body.hell-mode #sfw-toggle, body.hell-mode #sfw-toggle * { animation: none !important; }
+        @keyframes hellDrift {
+            0%   { transform: translate(0px, 0px) rotate(0deg); }
+            33%  { transform: translate(var(--x1, 0px), var(--y1, 0px)) rotate(var(--r1, 0deg)); }
+            66%  { transform: translate(var(--x2, 0px), var(--y2, 0px)) rotate(var(--r2, 0deg)); }
+            100% { transform: translate(var(--x3, 0px), var(--y3, 0px)) rotate(var(--r3, 0deg)); }
+        }
+
+        /* Окно входа в режим ада */
+        #hell-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: none;
+            justify-content: center; align-items: center; z-index: 40010; padding: 20px; box-sizing: border-box;
+        }
+        #hell-modal .box {
+            background: #151515; border: 2px solid #ff3300; border-radius: 10px;
+            padding: 28px; max-width: 460px; width: 100%; text-align: center; color: #ffb199; line-height: 1.6;
+        }
+        #hell-modal .row { display: flex; gap: 10px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
+        #hell-modal button {
+            padding: 10px 18px; border-radius: 20px; border: 1px solid #ff3300; background: transparent;
+            color: #ff3300; font-weight: bold; cursor: pointer;
+        }
+        #hell-modal button.primary { background: #ff3300; color: #fff; }
         @keyframes hellShake {
             from { transform: translate(2px, 3px) rotate(1deg); }
             to { transform: translate(-2px, -3px) rotate(-1deg); }
@@ -1562,6 +1592,29 @@
             </div>
         </div>
     </div>
+    <!-- Вход в режим ада -->
+    <div id="hell-modal">
+        <div class="box">
+            <h2 style="color:#ff3300; margin-top:0;">
+                <span class="lang-ru">🔥 ДОБРО ПОЖАЛОВАТЬ В АД, СМЕРТНЫЙ! 🔥</span>
+                <span class="lang-en">🔥 WELCOME TO HELL, MORTAL! 🔥</span>
+            </h2>
+            <p>
+                <span class="lang-ru">Если вы эпилептик, пожалуйста, нажмите отмену, для большого полудемона важно ваше здоровье.</span>
+                <span class="lang-en">If you have epilepsy, please press cancel. For the great half-demon, your health matters.</span>
+            </p>
+            <div class="row">
+                <button type="button" id="hell-enter" class="primary">
+                    <span class="lang-ru">ВОЙТИ</span>
+                    <span class="lang-en">ENTER</span>
+                </button>
+                <button type="button" id="hell-cancel">
+                    <span class="lang-ru">ОТМЕНА</span>
+                    <span class="lang-en">CANCEL</span>
+                </button>
+            </div>
+        </div>
+    </div>
     <audio id="bg-music" loop src="/assets/Lion_The_Prince_of_Hell_(Remastered).mp3" preload="none"></audio>
 
     <button id="backToTop" aria-label="Наверх">↑</button>
@@ -2020,14 +2073,40 @@
             }
         });
 
+        // Режим ада: вход или отмена
+        function startHell() {
+            const rnd = (min, max) => Math.random() * (max - min) + min;
+            const chaos = (el, amp) => {
+                for (let i = 1; i <= 3; i++) {
+                    el.style.setProperty('--x' + i, rnd(-amp, amp).toFixed(1) + 'px');
+                    el.style.setProperty('--y' + i, rnd(-amp, amp).toFixed(1) + 'px');
+                    el.style.setProperty('--r' + i, rnd(-25, 25).toFixed(1) + 'deg');
+                }
+                el.style.animationDuration = rnd(2.5, 5).toFixed(2) + 's';
+                el.style.animationDelay = rnd(0, 1.5).toFixed(2) + 's';
+            };
+            document.querySelectorAll('#page-content > *:not(canvas):not(#lightbox):not(.toggle-particles):not(#sfw-toggle)')
+                .forEach((el) => chaos(el, 220));
+            document.querySelectorAll('#page-content :is(h1, h2, h3, p, span, td, th, li, a, label)')
+                .forEach((el) => { if (!el.closest('#sfw-toggle')) chaos(el, 70); });
+            body.classList.add('hell-mode');
+        }
+
+        document.getElementById('hell-enter').addEventListener('click', () => {
+            document.getElementById('hell-modal').style.display = 'none';
+            startHell();
+        });
+        document.getElementById('hell-cancel').addEventListener('click', () => {
+            document.getElementById('hell-modal').style.display = 'none';
+        });
+
         // Easter egg
         let clickCount = 0;
         const romettoSpan = document.getElementById('rometto-click');
         romettoSpan.addEventListener('click', () => {
             clickCount++;
             if (clickCount === 6) {
-                body.classList.add('hell-mode');
-                alert(currentLang === 'ru' ? '🔥 ДОБРО ПОЖАЛОВАТЬ В АД 🔥' : '🔥 WELCOME TO HELL 🔥');
+                document.getElementById('hell-modal').style.display = 'flex';
                 clickCount = 0;
             }
         });
