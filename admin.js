@@ -4,7 +4,7 @@
   const GITHUB_REPO = 'rometto_List';
   const CONFIG_PATH = 'config.json';
   // SHA-256 файла rometto.key, строчными буквами (см. инструкцию)
-  const EXPECTED_KEY_HASH = 'вставь_sha256_хеш_сюда';
+  const EXPECTED_KEY_HASH = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
   // Кодовое слово: напечатай его на любой странице сайта (вне полей ввода)
   const SECRET_PHRASE = 'rometto';
   const SAVE_DELAY_MS = 800;
