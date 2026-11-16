@@ -703,12 +703,19 @@
 
         /* === МОБИЛЬНАЯ АДАПТАЦИЯ === */
         @media (max-width: 900px) {
+            /* главное: padding не должен раздувать блоки шире экрана */
+            html, body { max-width: 100%; overflow-x: hidden; }
+            #page-content, #page-content *, #page-content *::before, #page-content *::after { box-sizing: border-box; }
+            #page-content { min-width: 0; }
+            .accordion-content, .appearance-desc, .formula, .section, .hunting-block, .faq, .gallery-section { width: 100%; min-width: 0; max-width: 100%; }
+            #page-content img, #page-content video, #page-content canvas { max-width: 100%; }
             body { padding: 96px 14px 96px; }
 
+
             /* верхняя панель: два ряда, без наложений */
-            .back-btn { top: 10px; left: 64px; padding: 6px 12px; font-size: 12px; max-width: calc(100vw - 64px - 96px); }
+            .back-btn { top: 10px; left: 78px; padding: 6px 12px; font-size: 12px; max-width: calc(100vw - 78px - 96px); box-sizing: border-box; }
             .lang-switch { top: 10px; right: 10px; padding: 6px 12px; font-size: 12px; }
-            #sfw-toggle { top: 52px; right: auto; left: 64px; padding: 6px 12px; font-size: 12px; }
+            #sfw-toggle { top: 52px; right: auto; left: 78px; padding: 6px 12px; font-size: 12px; }
             .toggle-particles { top: 52px; right: 10px; padding: 6px 12px; font-size: 12px; }
 
             h1 { font-size: clamp(18px, 5.6vw, 30px) !important; margin: 10px 0 18px; }
@@ -720,8 +727,6 @@
 
             .nav-container-main { gap: 8px; }
             .nav-btn { width: 100%; box-sizing: border-box; white-space: normal; padding: 11px 14px; font-size: 13px; margin: 0; }
-            .toc { padding: 12px !important; margin-bottom: 22px !important; }
-            #toc-list { flex-direction: column; flex-wrap: nowrap !important; gap: 8px !important; }
             #toc-list li { width: 100%; }
 
             .appearance-desc { padding: 16px; margin: 16px 0; }
@@ -756,6 +761,20 @@
             #lb-close-btn { top: 12px; right: 12px; width: 42px; height: 42px; }
             #lb-hint { white-space: normal; text-align: center; max-width: 88vw; font-size: 11px; bottom: 12px; }
             #age-gate .age-gate-content, #adult-warning .box, #birth-modal .box, #birthday-popup .box, #hell-modal .box { padding: 20px; }
+        }
+
+        /* Оглавление на телефоне: скрыто, бургер ☰ открывает его выпадающей панелью */
+        @media (max-width: 899px) {
+            #toc-container { display: none !important; }
+            #toc-container.open {
+                display: flex !important; flex-direction: column;
+                position: fixed; top: 94px; left: 10px; right: 10px; z-index: 1000;
+                max-height: calc(100vh - 114px); max-height: calc(100dvh - 114px);
+                overflow-y: auto; -webkit-overflow-scrolling: touch;
+                margin: 0 !important; padding: 12px !important; background: #111;
+                box-sizing: border-box; width: auto;
+            }
+            #toc-list { display: flex !important; flex-direction: column; flex-wrap: nowrap !important; gap: 8px !important; margin: 0 !important; }
         }
         @media (max-width: 400px) {
             body { padding-left: 10px; padding-right: 10px; }
@@ -2177,8 +2196,16 @@
         window.addEventListener('resize', () => {
             hamburger.style.display = window.innerWidth < 900 ? 'flex' : 'none';
         });
-        hamburger.addEventListener('click', () => {
-            tocContainer.style.display = tocContainer.style.display === 'flex' ? 'none' : 'flex';
+        hamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            tocContainer.classList.toggle('open');
+        });
+        // закрывать оглавление при выборе раздела или нажатии мимо панели
+        document.getElementById('toc-list').addEventListener('click', (e) => {
+            if (e.target.closest('a')) tocContainer.classList.remove('open');
+        });
+        document.addEventListener('click', (e) => {
+            if (!tocContainer.contains(e.target)) tocContainer.classList.remove('open');
         });
 
         // Искры
