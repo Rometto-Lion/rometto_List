@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Информационный лист о персонаже Rometto — гигантский лев-полудемон. Детализированные биологические данные, физика и анатомия.">
     <title>Информационный лист о Рометто</title>
  
@@ -26,9 +26,16 @@
     <style>
         @font-face {
             font-family: 'LionKing';
-            src: url('lion_king.ttf') format('truetype');
+            /* пробуем несколько вариантов расположения файла, берётся первый, который найдётся */
+            src: url('lion_king.ttf') format('truetype'),
+                 url('./lion_king.ttf') format('truetype'),
+                 url('/lion_king.ttf') format('truetype'),
+                 url('/assets/lion_king.ttf') format('truetype'),
+                 url('/assets/fonts/lion_king.ttf') format('truetype'),
+                 url('../lion_king.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
+            font-display: swap;
         }
         body {
             cursor: url('cursor_busy.png') 12 12, auto;
@@ -402,35 +409,33 @@
             font-family: 'LionKing', Arial, sans-serif !important;
             letter-spacing: 5px;
             text-transform: uppercase;
-            color: #a0522d;
+            color: #e8782a; /* рыжий */
             text-shadow:
-                0 0 5px #ff6a00,
-                0 0 12px rgba(255, 106, 0, 0.75),
-                0 0 25px rgba(200, 70, 0, 0.55),
-                0 0 50px rgba(160, 40, 0, 0.35),
-                0 0 90px rgba(120, 20, 0, 0.2),
+                0 0 12px rgba(230, 126, 34, 0.85),
+                0 0 28px rgba(255, 85, 0, 0.65),
+                0 0 56px rgba(255, 70, 0, 0.42),
+                0 0 90px rgba(200, 35, 10, 0.28),
                 2px 2px 8px rgba(0,0,0,0.9);
-            animation: romettoGlow 3s ease-in-out infinite alternate;
+            animation: romettoGlow 4s ease-in-out infinite;
         }
+        /* то же дыхание, что у рамки оглавления: #e67e22 → #ff5500 */
         @keyframes romettoGlow {
-            from {
-                color: #9a4820;
+            0%, 100% {
+                color: #e57a28;
                 text-shadow:
-                    0 0 4px #e05a00,
-                    0 0 10px rgba(224, 90, 0, 0.65),
-                    0 0 20px rgba(180, 55, 0, 0.45),
-                    0 0 42px rgba(140, 30, 0, 0.28),
-                    0 0 75px rgba(100, 10, 0, 0.15),
+                    0 0 10px rgba(230, 126, 34, 0.8),
+                    0 0 24px rgba(230, 126, 34, 0.55),
+                    0 0 46px rgba(255, 85, 0, 0.32),
+                    0 0 80px rgba(200, 35, 10, 0.2),
                     2px 2px 8px rgba(0,0,0,0.9);
             }
-            to {
-                color: #bf5a1e;
+            50% {
+                color: #f08a38;
                 text-shadow:
-                    0 0 7px #ff7a10,
-                    0 0 16px rgba(255, 122, 16, 0.85),
-                    0 0 32px rgba(230, 90, 10, 0.65),
-                    0 0 62px rgba(190, 55, 5, 0.42),
-                    0 0 100px rgba(150, 30, 0, 0.25),
+                    0 0 14px rgba(255, 110, 20, 0.9),
+                    0 0 34px rgba(255, 85, 0, 0.8),
+                    0 0 66px rgba(255, 70, 0, 0.55),
+                    0 0 105px rgba(210, 40, 10, 0.35),
                     2px 2px 8px rgba(0,0,0,0.9);
             }
         }
@@ -695,6 +700,70 @@
             z-index: -1; display: none; pointer-events: none;
         }
         body.hell-mode #hell-bg { display: block; }
+
+        /* === МОБИЛЬНАЯ АДАПТАЦИЯ === */
+        @media (max-width: 900px) {
+            body { padding: 96px 14px 96px; }
+
+            /* верхняя панель: два ряда, без наложений */
+            .back-btn { top: 10px; left: 64px; padding: 6px 12px; font-size: 12px; max-width: calc(100vw - 64px - 96px); }
+            .lang-switch { top: 10px; right: 10px; padding: 6px 12px; font-size: 12px; }
+            #sfw-toggle { top: 52px; right: auto; left: 64px; padding: 6px 12px; font-size: 12px; }
+            .toggle-particles { top: 52px; right: 10px; padding: 6px 12px; font-size: 12px; }
+
+            h1 { font-size: clamp(18px, 5.6vw, 30px) !important; margin: 10px 0 18px; }
+            .title-rometto { font-size: 1.45em; letter-spacing: 3px; margin-top: 4px; }
+
+            h2 { font-size: 18px; margin-top: 32px; padding: 0 38px 8px; line-height: 1.3; }
+            .accordion-toggle { right: 8px; }
+            .accordion-content { padding: 0 4px; }
+
+            .nav-container-main { gap: 8px; }
+            .nav-btn { width: 100%; box-sizing: border-box; white-space: normal; padding: 11px 14px; font-size: 13px; margin: 0; }
+            .toc { padding: 12px !important; margin-bottom: 22px !important; }
+            #toc-list { flex-direction: column; flex-wrap: nowrap !important; gap: 8px !important; }
+            #toc-list li { width: 100%; }
+
+            .appearance-desc { padding: 16px; margin: 16px 0; }
+            .appearance-desc h3 { font-size: 17px; }
+            .appearance-desc p, .appearance-list li { font-size: 14px; line-height: 1.6; }
+            .appearance-list { padding-left: 18px; }
+            .hunting-block { padding: 16px; }
+            .hunting-block p { font-size: 14px; }
+            .formula { padding: 12px; font-size: 13px; }
+            .section { margin-top: 26px; }
+            .contacts-block { gap: 12px 18px; }
+            .artist-credit { font-size: 13px; line-height: 1.7; }
+
+            /* таблицы: прокрутка вместо сжатия */
+            table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; table-layout: auto; }
+            th, td { font-size: 13px; padding: 8px 8px; min-width: 84px; hyphens: auto; }
+
+            .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+            .gallery-filter-btn { padding: 8px 14px; }
+            .faq { margin: 34px auto 20px; }
+            .faq-question { padding: 14px 16px; font-size: 15px; }
+            .faq-answer { padding: 0 16px; font-size: 14px; }
+            .faq-answer.open { padding: 14px 16px; }
+
+            /* плеер и «вверх» компактнее */
+            #music-player { bottom: 16px; right: 14px; gap: 8px; }
+            #music-toggle-btn { width: 48px; height: 48px; font-size: 19px; }
+            #music-switch-btn { width: 36px; height: 36px; font-size: 14px; }
+            #music-volume { height: 56px; }
+            #backToTop { bottom: 16px; right: 74px; width: 48px; height: 48px; font-size: 26px; }
+
+            #lb-close-btn { top: 12px; right: 12px; width: 42px; height: 42px; }
+            #lb-hint { white-space: normal; text-align: center; max-width: 88vw; font-size: 11px; bottom: 12px; }
+            #age-gate .age-gate-content, #adult-warning .box, #birth-modal .box, #birthday-popup .box, #hell-modal .box { padding: 20px; }
+        }
+        @media (max-width: 400px) {
+            body { padding-left: 10px; padding-right: 10px; }
+            .back-btn span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        }
+        @media (hover: none) {
+            .gallery-card-overlay { opacity: 1; }
+        }
     </style>
 </head>
 <body class="no-scroll" data-lang="ru">
