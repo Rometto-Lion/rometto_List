@@ -3,8 +3,8 @@
   const GITHUB_OWNER = 'Rometto-Lion';
   const GITHUB_REPO = 'rometto_List';
   const CONFIG_PATH = 'config.json';
- 
-  const EXPECTED_KEY_HASH = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+  // SHA-256 файла rometto.key, строчными буквами (см. инструкцию)
+  const EXPECTED_KEY_HASH = 'cd372fb85148700fa88095e3492d3f9f5beb43e555e5ff26d95f5a6adc36f8e6';
   // Кодовое слово: напечатай его на любой странице сайта (вне полей ввода)
   const SECRET_PHRASE = 'rometto';
   const SAVE_DELAY_MS = 800;
